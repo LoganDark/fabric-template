@@ -13,6 +13,6 @@
 	},
 	"mixins": ["TEMPLATE_MODID.mixins.json"],
 	"depends": {
-		"minecraft": "26.1.1"
+		"minecraft": "26.1.2"
 	}
 }

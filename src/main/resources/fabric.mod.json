@@ -13,7 +13,7 @@
 	},
 	"mixins": ["TEMPLATE_MODID.mixins.json"],
 	"depends": {
-		"minecraft": "",
+		"minecraft": "26.1",
 		"fabric-resource-loader-v0": "*"
 	}
 }

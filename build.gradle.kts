@@ -1,0 +1,124 @@
+@file:Suppress("PropertyName")
+
+val minecraft_version: String by project
+val yarn_mappings: String by project
+val loader_version: String by project
+val fabric_api_version: String by project
+
+val mod_group: String by project
+val mod_package: String by project
+val mod_class: String by project
+val mod_id: String by project
+val mod_name: String by project
+val mod_version: String by project
+val mod_description: String by project
+
+val mod_full_package = "${mod_group}.${mod_package}"
+
+plugins {
+	id("fabric-loom")
+}
+
+group = mod_group
+version = mod_version
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets.main {
+	java.srcDir("build/generated/sources/mod/java")
+}
+
+val generateModSources by tasks.registering {
+	val templateDir = file("src/main/java/TEMPLATE_PACKAGE")
+	val outputDir = layout.buildDirectory.dir("generated/sources/mod/java")
+
+	inputs.dir(templateDir)
+	inputs.property("mod_full_package", mod_full_package)
+	inputs.property("mod_class", mod_class)
+	outputs.dir(outputDir)
+
+	doLast {
+		val outBase = outputDir.get().asFile
+		val packageDir = File(outBase, mod_full_package.replace('.', '/'))
+
+		outBase.deleteRecursively()
+		packageDir.mkdirs()
+
+		templateDir.walkTopDown().filter { it.isFile && it.extension == "java" }.forEach { file ->
+			val relativePath = file.relativeTo(templateDir)
+			var content = file.readText()
+				.replace("TEMPLATE_PACKAGE", mod_full_package)
+				.replace("TEMPLATE_CLASSNAME", mod_class)
+
+			var fileName = relativePath.path
+				.replace("TEMPLATE_CLASSNAME", mod_class)
+
+			val targetFile = File(packageDir, fileName)
+			targetFile.parentFile.mkdirs()
+			targetFile.writeText(content)
+		}
+	}
+}
+
+tasks.compileJava {
+	dependsOn(generateModSources)
+}
+
+tasks.processResources {
+	val props = mapOf(
+		"mod_id" to mod_id,
+		"mod_name" to mod_name,
+		"mod_version" to mod_version,
+		"mod_class" to mod_class,
+		"mod_description" to mod_description,
+		"mod_full_package" to mod_full_package,
+	)
+
+	inputs.properties(props)
+
+	filesMatching(listOf("fabric.mod.json", "*.mixins.json")) {
+		expand(props)
+	}
+
+	rename("TEMPLATE_MODID\\.(.*\\.)*mixins\\.json", "${mod_id}.$1mixins.json")
+
+	doLast {
+		destinationDir.walkTopDown()
+			.filter { it.name == "fabric.mod.json" || it.name.endsWith(".mixins.json") }
+			.forEach { file ->
+				file.writeText(
+					file.readText()
+						.replace("TEMPLATE_PACKAGE", mod_full_package)
+						.replace("TEMPLATE_CLASSNAME", mod_class)
+						.replace("TEMPLATE_MODID", mod_id)
+				)
+			}
+	}
+}
+
+tasks.jar {
+	exclude("TEMPLATE_PACKAGE/**")
+}
+
+dependencies {
+	minecraft("com.mojang:minecraft:${minecraft_version}")
+	mappings("net.fabricmc:yarn:${yarn_mappings}")
+	modImplementation("net.fabricmc:fabric-loader:${loader_version}")
+}
+
+loom {
+	runConfigs.named("server") {
+		runDir = "run_server"
+	}
+}
+
+afterEvaluate {
+	tasks.findByName("ideaSyncTask")?.doFirst {
+		val configDir = file(".idea/runConfigurations")
+		configDir.resolve("Minecraft_Client.xml").delete()
+		configDir.resolve("Minecraft_Server.xml").delete()
+	}
+}
+

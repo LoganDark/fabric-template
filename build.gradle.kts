@@ -1,7 +1,6 @@
 @file:Suppress("PropertyName")
 
 val minecraft_version: String by project
-val yarn_mappings: String by project
 val loader_version: String by project
 val fabric_api_version: String by project
 
@@ -16,7 +15,7 @@ val mod_description: String by project
 val mod_full_package = "${mod_group}.${mod_package}"
 
 plugins {
-	id("fabric-loom")
+	id("net.fabricmc.fabric-loom")
 }
 
 group = mod_group
@@ -124,9 +123,8 @@ tasks.jar {
 
 dependencies {
 	minecraft("com.mojang:minecraft:${minecraft_version}")
-	mappings("net.fabricmc:yarn:${yarn_mappings}")
-	modImplementation("net.fabricmc:fabric-loader:${loader_version}")
-	modImplementation(fabricApi.module("fabric-resource-loader-v0", fabric_api_version))
+	implementation("net.fabricmc:fabric-loader:${loader_version}")
+	implementation(fabricApi.module("fabric-resource-loader-v0", fabric_api_version))
 }
 
 loom {

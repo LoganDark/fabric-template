@@ -126,7 +126,7 @@ dependencies {
 	minecraft("com.mojang:minecraft:${minecraft_version}")
 	mappings("net.fabricmc:yarn:${yarn_mappings}")
 	modImplementation("net.fabricmc:fabric-loader:${loader_version}")
-	modImplementation("net.fabricmc:fabric:${fabric_api_version}")
+	modImplementation(fabricApi.module("fabric-resource-loader-v0", fabric_api_version))
 }
 
 loom {

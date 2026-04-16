@@ -1,0 +1,22 @@
+/.gradle/
+/build/
+/bin/
+!/gradle/wrapper/gradle-wrapper.jar
+!/gradle/wrapper/gradle-wrapper.properties
+
+/run/*
+!/run/options.txt
+/run_server/*
+!/run_server/eula.txt
+!/run_server/server.properties
+
+/scripts/data/
+
+### IntelliJ IDEA ###
+/.idea
+*.iws
+*.iml
+*.ipr
+
+### Mac OS ###
+.DS_Store

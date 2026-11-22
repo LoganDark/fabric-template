@@ -1,4 +1,4 @@
-version:5128
+version:5129
 ao:true
 biomeBlendRadius:7
 chunkSectionFadeInTime:0.0
@@ -26,6 +26,7 @@ debugGuiScale:-1
 maxAnisotropyBit:3
 textureFiltering:2
 maxFps:260
+improvedFog:true
 improvedTransparency:true
 inactivityFpsLimit:"minimized"
 mipmapLevels:4
@@ -139,6 +140,7 @@ key_key.fullscreen:key.keyboard.f11
 key_key.spectatorOutlines:key.keyboard.unknown
 key_key.spectatorHotbar:key.mouse.middle
 key_key.swapOffhand:key.keyboard.f
+key_key.repeatRecipeOrTrade:key.keyboard.r
 key_key.saveToolbarActivator:key.keyboard.c
 key_key.loadToolbarActivator:key.keyboard.x
 key_key.advancements:key.keyboard.l
